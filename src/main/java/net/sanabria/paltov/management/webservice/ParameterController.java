@@ -1,11 +1,8 @@
 package net.sanabria.paltov.management.webservice;
 
 import lombok.RequiredArgsConstructor;
-import net.sanabria.paltov.management.model.Domain;
 import net.sanabria.paltov.management.model.Parameter;
-import net.sanabria.paltov.management.response.DomainResponseRest;
 import net.sanabria.paltov.management.response.ParameterResponseRest;
-import net.sanabria.paltov.management.service.IDomainService;
 import net.sanabria.paltov.management.service.IParameterService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
