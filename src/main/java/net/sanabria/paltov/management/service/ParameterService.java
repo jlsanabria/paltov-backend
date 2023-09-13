@@ -85,7 +85,7 @@ public class ParameterService implements IParameterService {
     @Override
     @Transactional
     public ResponseEntity<ParameterResponseRest> updateParameter(Parameter parameter, Long domainId, Long id) {
-        ParameterResponseRest responseREST = new ParameterResponseRest();
+        ParameterResponseRest responseRest = new ParameterResponseRest();
         List<Parameter> parameters = new ArrayList<Parameter>();
 
         try {
@@ -94,8 +94,8 @@ public class ParameterService implements IParameterService {
             if (domain.isPresent()) {
                 parameter.setDomain(domain.get());
             } else {
-                responseREST.setMetadata("ERROR", "0", "Query error, domain not found");
-                return new ResponseEntity<ParameterResponseRest>(responseREST, HttpStatus.NOT_FOUND);
+                responseRest.setMetadata("ERROR", "0", "Query error, domain not found");
+                return new ResponseEntity<ParameterResponseRest>(responseRest, HttpStatus.NOT_FOUND);
             }
 
             // Update parameter
@@ -108,44 +108,45 @@ public class ParameterService implements IParameterService {
                 Parameter parameterUpdated = parameterRepository.save(parameterUpdate.get());
                 if (parameterUpdated != null) {
                     parameters.add(parameterUpdated);
-                    responseREST.getParameterResponse().setParameters(parameters);
-                    responseREST.setMetadata("OK", "1", "Successful parameter updated :)", UsefulDate.dateTimeNow());
+                    responseRest.getParameterResponse().setParameters(parameters);
+                    responseRest.setMetadata("OK", "1", "Successful parameter updated :)", UsefulDate.dateTimeNow());
                 } else {
-                    responseREST.setMetadata("ERROR", "0", "Parameter not updated :(", UsefulDate.dateTimeNow());
-                    return new ResponseEntity<ParameterResponseRest>(responseREST, HttpStatus.BAD_REQUEST);
+                    responseRest.setMetadata("ERROR", "0", "Parameter not updated :(", UsefulDate.dateTimeNow());
+                    return new ResponseEntity<ParameterResponseRest>(responseRest, HttpStatus.BAD_REQUEST);
                 }
             } else {
-                responseREST.setMetadata("ERROR", "0", "Parameters not found :(", UsefulDate.dateTimeNow());
-                return new ResponseEntity<ParameterResponseRest>(responseREST, HttpStatus.NOT_FOUND);
+                responseRest.setMetadata("ERROR", "0", "Parameters not found :(", UsefulDate.dateTimeNow());
+                return new ResponseEntity<ParameterResponseRest>(responseRest, HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
             e.getStackTrace();
-            responseREST.setMetadata("ERROR", "0", "Error updating parameter :(", UsefulDate.dateTimeNow());
-            return new ResponseEntity<ParameterResponseRest>(responseREST, HttpStatus.INTERNAL_SERVER_ERROR);
+            responseRest.setMetadata("ERROR", "0", "Error updating parameter :(", UsefulDate.dateTimeNow());
+            return new ResponseEntity<ParameterResponseRest>(responseRest, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<ParameterResponseRest>(responseREST, HttpStatus.OK);
+        return new ResponseEntity<ParameterResponseRest>(responseRest, HttpStatus.OK);
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ParameterResponseRest> deleteParameterById(Long id) {
-        ParameterResponseRest responseREST = new ParameterResponseRest();
+        ParameterResponseRest responseRest = new ParameterResponseRest();
         List<Parameter> parameters = new ArrayList<Parameter>();
         try {
             Optional<Parameter> parameterDeleted = parameterRepository.findById(id);
             if (parameterDeleted.isPresent()) {
                 parameterRepository.deleteById(id);
                 parameters.add(parameterDeleted.get());
-                responseREST.getParameterResponse().setParameters(parameters);
-                responseREST.setMetadata("OK", "1", "Successful parameter deleted :)", UsefulDate.dateTimeNow());
+                responseRest.getParameterResponse().setParameters(parameters);
+                responseRest.setMetadata("OK", "1", "Successful parameter deleted :)", UsefulDate.dateTimeNow());
             } else {
-                responseREST.setMetadata("ERROR", "0", "Parameter not found :(", UsefulDate.dateTimeNow());
-                return new ResponseEntity<ParameterResponseRest>(responseREST, HttpStatus.NOT_FOUND);
+                responseRest.setMetadata("ERROR", "0", "Parameter not found :(", UsefulDate.dateTimeNow());
+                return new ResponseEntity<ParameterResponseRest>(responseRest, HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            responseREST.setMetadata("ERROR", "0", "Error deleting parameter by ID :(", UsefulDate.dateTimeNow());
             e.getStackTrace();
-            return new ResponseEntity<ParameterResponseRest>(responseREST, HttpStatus.INTERNAL_SERVER_ERROR);
+            responseRest.setMetadata("ERROR", "0", "Error deleting parameter by ID :(", UsefulDate.dateTimeNow());
+            return new ResponseEntity<ParameterResponseRest>(responseRest, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<ParameterResponseRest>(responseREST, HttpStatus.OK);
+        return new ResponseEntity<ParameterResponseRest>(responseRest, HttpStatus.OK);
     }
 }
